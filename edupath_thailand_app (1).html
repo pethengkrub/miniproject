@@ -1,0 +1,1535 @@
+<!DOCTYPE html>
+<html lang="th" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduPath Thailand - ค้นหาตัวตน & คลังข้อสอบ ม.ปลาย</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Prompt -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        duoGreen: '#58cc02',
+                        duoGreenDark: '#46a302',
+                        duoBlue: '#1cb0f6',
+                        duoBlueDark: '#0f82bd',
+                        duoYellow: '#ffc800',
+                        duoYellowDark: '#d7a700',
+                        duoOrange: '#ff9600',
+                        duoPurple: '#ce82ff',
+                        duoRed: '#ff4b4b',
+                        duoRedDark: '#ea2b2b',
+                        duoGray: '#e5e5e5',
+                        duoText: '#4b4b4b',
+                    },
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Prompt', sans-serif; background-color: #f7f9fa; }
+        .duo-btn {
+            transition: all 0.1s ease;
+            box-shadow: 0 4px 0 0 rgba(0,0,0,0.2);
+        }
+        .duo-btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 0 0 0 rgba(0,0,0,0.2);
+        }
+        .duo-card {
+            border-bottom-width: 4px;
+            transition: all 0.15s ease;
+        }
+        .duo-card:hover {
+            transform: translateY(-2px);
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 pb-20 md:pb-0 md:pl-64">
+
+    <!-- Desktop Sidebar Sidebar Navigation -->
+    <aside class="hidden md:flex flex-col fixed left-0 top-0 h-full w-64 bg-white border-r-2 border-slate-200 p-4 z-40">
+        <div class="flex items-center gap-3 px-2 py-3 mb-6">
+            <div class="w-10 h-10 rounded-2xl bg-duoGreen flex items-center justify-center text-white font-extrabold text-xl shadow-md">
+                🎓
+            </div>
+            <div>
+                <h1 class="font-black text-2xl tracking-tight text-duoGreen leading-none">EduPath</h1>
+                <span class="text-xs font-semibold text-slate-400 tracking-wider uppercase">Thailand</span>
+            </div>
+        </div>
+
+        <nav class="flex-1 space-y-2">
+            <button onclick="switchTab('learn')" id="nav-learn" class="nav-btn w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-slate-600 hover:bg-slate-100 transition active-tab">
+                <i class="fa-solid fa-book-open text-xl text-duoGreen w-6"></i>
+                <span>แบบฝึกหัด</span>
+            </button>
+            <button onclick="switchTab('discovery')" id="nav-discovery" class="nav-btn w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-slate-600 hover:bg-slate-100 transition">
+                <i class="fa-solid fa-compass text-xl text-duoBlue w-6"></i>
+                <span>ค้นหาตัวตน</span>
+            </button>
+            <button onclick="switchTab('creator')" id="nav-creator" class="nav-btn w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-slate-600 hover:bg-slate-100 transition">
+                <i class="fa-solid fa-circle-plus text-xl text-duoYellowDark w-6"></i>
+                <span>สร้างด่าน</span>
+            </button>
+            <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn w-full flex items-center gap-4 px-4 py-3 rounded-2xl font-bold text-slate-600 hover:bg-slate-100 transition">
+                <i class="fa-solid fa-user-astronaut text-xl text-duoPurple w-6"></i>
+                <span>โปรไฟล์</span>
+            </button>
+        </nav>
+
+        <!-- User Brief Stat Footer -->
+        <div class="p-4 bg-slate-50 rounded-2xl border-2 border-slate-200 mt-auto">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <span class="text-xl">⚡</span>
+                    <div>
+                        <div class="text-xs text-slate-400 font-bold uppercase">คะแนน XP สะสม</div>
+                        <div id="sidebar-xp" class="text-lg font-black text-duoOrange">0 XP</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Top Mobile Header -->
+    <header class="md:hidden sticky top-0 bg-white border-b-2 border-slate-200 px-4 py-3 z-30 flex justify-between items-center shadow-sm">
+        <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-xl bg-duoGreen flex items-center justify-center text-white font-black text-base shadow">
+                🎓
+            </div>
+            <span class="font-extrabold text-xl text-duoGreen">EduPath</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <div class="flex items-center gap-1.5 px-3 py-1 bg-amber-50 rounded-full border-2 border-amber-200">
+                <span class="text-sm">⚡</span>
+                <span id="mobile-xp" class="font-black text-sm text-duoOrange">0 XP</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Bottom Navigation Bar -->
+    <nav class="md:hidden fixed bottom-0 left-0 w-full bg-white border-t-2 border-slate-200 px-2 py-2 flex justify-around items-center z-40 shadow-lg">
+        <button onclick="switchTab('learn')" id="mnav-learn" class="flex flex-col items-center p-2 text-duoGreen">
+            <i class="fa-solid fa-book-open text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">ฝึกหัด</span>
+        </button>
+        <button onclick="switchTab('discovery')" id="mnav-discovery" class="flex flex-col items-center p-2 text-slate-400">
+            <i class="fa-solid fa-compass text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">ค้นพบ</span>
+        </button>
+        <button onclick="switchTab('creator')" id="mnav-creator" class="flex flex-col items-center p-2 text-slate-400">
+            <i class="fa-solid fa-circle-plus text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">สร้างด่าน</span>
+        </button>
+        <button onclick="switchTab('profile')" id="mnav-profile" class="flex flex-col items-center p-2 text-slate-400">
+            <i class="fa-solid fa-user-astronaut text-xl mb-1"></i>
+            <span class="text-[10px] font-bold">โปรไฟล์</span>
+        </button>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-5xl w-full mx-auto p-4 md:p-8">
+
+        <!-- TAB 1: LEARN & PRACTICE -->
+        <section id="tab-learn" class="space-block">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h2 class="text-2xl md:text-3xl font-black text-slate-800">คลังแบบฝึกหัด ม.ปลาย & TCAS</h2>
+                    <p class="text-slate-500 font-medium">เก็งข้อสอบจริง สะสม XP เพื่อปลดล็อกความแม่นยำ!</p>
+                </div>
+                <!-- Filter category chips -->
+                <div class="flex flex-wrap gap-2">
+                    <button onclick="filterCategory('all')" class="cat-chip bg-duoGreen text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-sm">ทั้งหมด</button>
+                    <button onclick="filterCategory('m4')" class="cat-chip bg-white border-2 border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-slate-50">ม.4</button>
+                    <button onclick="filterCategory('m5')" class="cat-chip bg-white border-2 border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-slate-50">ม.5</button>
+                    <button onclick="filterCategory('m6')" class="cat-chip bg-white border-2 border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-slate-50">ม.6</button>
+                    <button onclick="filterCategory('tcas')" class="cat-chip bg-white border-2 border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-slate-50">TGAT/TPAT</button>
+                </div>
+            </div>
+
+            <!-- Stages Grid -->
+            <div id="stages-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <!-- Dynamic Stages populated via JavaScript -->
+            </div>
+        </section>
+
+        <!-- TAB 2: RIASEC FACULTY DISCOVERY QUIZ -->
+        <section id="tab-discovery" class="hidden space-block">
+            <!-- Quiz Start / Cover View -->
+            <div id="quiz-intro" class="bg-white rounded-3xl border-2 border-slate-200 p-6 md:p-10 text-center shadow-sm max-w-2xl mx-auto">
+                <div class="w-20 h-20 bg-amber-100 rounded-3xl mx-auto flex items-center justify-center text-4xl mb-4 border-2 border-amber-200">
+                    🧭
+                </div>
+                <h2 class="text-2xl md:text-3xl font-black text-slate-800 mb-2">ค้นหาคณะและสายอาชีพที่ใช่ (20 ข้อ)</h2>
+                <p class="text-slate-500 mb-6 text-sm md:text-base">
+                    วิเคราะห์ตามหลักการวัดบุคลิกภาพเชิงอาชีพ <span class="font-bold text-duoBlue">Holland Code (RIASEC)</span> 
+                    เพื่อค้นหา 3 คณะที่เหมาะกับสไตล์ของคุณมากที่สุดในประเทศไทย
+                </p>
+
+                <div class="grid grid-cols-2 gap-3 max-w-sm mx-auto mb-8 text-left text-xs font-semibold text-slate-600">
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-duoGreen"></i>
+                        <span>8 ข้อ: ค่านิยม & วิถีชีวิต</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-duoGreen"></i>
+                        <span>12 ข้อ: สถานการณ์จริง</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-check-circle text-duoGreen"></i>
+                        <span>สัดส่วน TGAT/TPAT</span>
+                    </div>
+                    <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-gift text-duoOrange"></i>
+                        <span>รับ +50 XP เมื่อทำเสร็จ</span>
+                    </div>
+                </div>
+
+                <button onclick="startDiscoveryQuiz()" class="duo-btn w-full max-w-xs py-4 bg-duoGreen border-b-4 border-duoGreenDark text-white font-extrabold rounded-2xl text-lg hover:brightness-105 active:scale-95">
+                    เริ่มต้นทำแบบประเมิน 🚀
+                </button>
+            </div>
+
+            <!-- Quiz Interactive View -->
+            <div id="quiz-question-box" class="hidden max-w-2xl mx-auto">
+                <!-- Progress Header -->
+                <div class="flex items-center gap-4 mb-6">
+                    <button onclick="cancelDiscoveryQuiz()" class="text-slate-400 hover:text-slate-600 text-xl"><i class="fa-solid fa-xmark"></i></button>
+                    <div class="flex-1 bg-slate-200 h-4 rounded-full overflow-hidden p-0.5">
+                        <div id="quiz-progress-bar" class="bg-duoGreen h-full rounded-full transition-all duration-300" style="width: 5%"></div>
+                    </div>
+                    <span id="quiz-step-indicator" class="font-bold text-sm text-slate-500">1/20</span>
+                </div>
+
+                <!-- Mascot Speech Box -->
+                <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm mb-6">
+                    <div class="flex items-start gap-4 mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-duoBlue flex-shrink-0 flex items-center justify-center text-white text-2xl font-black">
+                            🦉
+                        </div>
+                        <div>
+                            <span id="question-category-tag" class="inline-block px-3 py-0.5 bg-blue-50 text-duoBlue text-xs font-bold rounded-full mb-1 border border-blue-200">คำถามเชิงกว้าง</span>
+                            <h3 id="question-text" class="text-lg md:text-xl font-bold text-slate-800 leading-snug">
+                                ข้อความคำถามจะปรากฏตรงนี้...
+                            </h3>
+                        </div>
+                    </div>
+
+                    <!-- Options Grid -->
+                    <div id="quiz-options-container" class="space-y-3 mt-6">
+                        <!-- Choice Buttons Inserted Dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quiz Result View -->
+            <div id="quiz-result-view" class="hidden max-w-3xl mx-auto space-y-6">
+                <!-- Header Banner -->
+                <div class="bg-gradient-to-r from-duoBlue to-indigo-600 rounded-3xl p-6 md:p-8 text-white text-center shadow-md">
+                    <span class="bg-white/20 px-4 py-1 rounded-full text-xs font-bold tracking-wider uppercase">ผลการประเมินวิชาการ ม.ปลาย</span>
+                    <h2 class="text-2xl md:text-4xl font-black mt-2 mb-1">ผลลัพธ์ Holland RIASEC Code</h2>
+                    <p id="result-riasec-code" class="text-3xl font-extrabold text-duoYellow tracking-widest my-2">I - A - S</p>
+                    <p class="text-sm text-blue-100">บันทึกเรียบร้อย! ข้อมูลนี้ตรงกับสไตล์การเรียนรู้และศักยภาพหลักของคุณ</p>
+                </div>
+
+                <!-- Top Recommended Faculties Grid -->
+                <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm">
+                    <h3 class="text-xl font-black text-slate-800 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-trophy text-duoYellow"></i> Top 3 คณะที่เหมาะกับคุณมากที่สุดในไทย
+                    </h3>
+                    <div id="faculties-recommend-container" class="space-y-4">
+                        <!-- Dynamic faculties list -->
+                    </div>
+                </div>
+
+                <!-- TCAS Score Weighting Guidance -->
+                <div class="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm">
+                    <h3 class="text-xl font-black text-slate-800 mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-chart-pie text-duoPurple"></i> สัดส่วนคะแนน TCAS ที่ควรเน้นเตรียมตัว
+                    </h3>
+                    <p class="text-slate-500 text-xs mb-4">แนะนำตามเกณฑ์การรับสมัครจริงของคณะกลุ่มเป้าหมาย</p>
+                    <div id="tcas-weight-container" class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <!-- Dynamic TCAS breakdown -->
+                    </div>
+                </div>
+
+                <!-- Thai Universities & Career Info -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-slate-50 border-2 border-slate-200 rounded-3xl p-5">
+                        <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-building-columns text-duoBlue"></i> มหาวิทยาลัยชั้นนำที่โดดเด่น
+                        </h4>
+                        <ul id="top-unis-list" class="text-xs text-slate-600 space-y-1.5 list-disc pl-4">
+                            <!-- Dynamic list -->
+                        </ul>
+                    </div>
+                    <div class="bg-slate-50 border-2 border-slate-200 rounded-3xl p-5">
+                        <h4 class="font-bold text-slate-800 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-money-bill-trend-up text-duoGreen"></i> ประมาณการเงินเดือนเริ่มต้นในไทย
+                        </h4>
+                        <p id="salary-estimate-text" class="text-lg font-black text-duoGreen mb-1">20,000 - 35,000 บาท/เดือน</p>
+                        <p class="text-[11px] text-slate-500">ขึ้นอยู่กับทักษะเฉพาะทาง สถาบัน และการรับรองวิชาชีพเพิ่มเติม</p>
+                    </div>
+                </div>
+
+                <!-- Save Action Button -->
+                <div class="text-center pt-2">
+                    <button id="save-quiz-btn" onclick="saveQuizResultToFirestore()" class="duo-btn px-8 py-4 bg-duoGreen border-b-4 border-duoGreenDark text-white font-extrabold rounded-2xl text-lg hover:brightness-105 active:scale-95">
+                        บันทึกผลการค้นหาตัวตนเข้าโปรไฟล์ (+50 XP) 💾
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: STAGE CREATOR FORM -->
+        <section id="tab-creator" class="hidden space-block">
+            <div class="max-w-2xl mx-auto bg-white border-2 border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                <div class="flex items-center gap-3 mb-6">
+                    <div class="w-12 h-12 bg-amber-100 rounded-2xl flex items-center justify-center text-duoYellowDark text-2xl">
+                        ➕
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800">สร้างด่านทบทวนบทเรียน</h2>
+                        <p class="text-slate-500 text-sm">แบ่งปันโจทย์ข้อสอบกับเพื่อนๆ ม.ปลาย ทั่วประเทศ</p>
+                    </div>
+                </div>
+
+                <form id="create-stage-form" onsubmit="handleCreateStage(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">ชื่อด่าน / หัวข้อข้อสอบ</label>
+                        <input type="text" id="stage-title" required placeholder="เช่น ตะลุยโจทย์เซต ม.4 หรือ TGAT1 การคิดอย่างมีเหตุผล" 
+                            class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duoBlue focus:outline-none font-medium text-sm">
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">ระดับชั้น / หมวดหมู่</label>
+                            <select id="stage-category" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duoBlue focus:outline-none font-medium text-sm">
+                                <option value="m4">ม.4</option>
+                                <option value="m5">ม.5</option>
+                                <option value="m6">ม.6</option>
+                                <option value="tcas">TGAT/TPAT</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">วิชา / แท็ก</label>
+                            <input type="text" id="stage-subject" required placeholder="เช่น คณิตศาสตร์, ภาษาอังกฤษ, TGAT" 
+                                class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duoBlue focus:outline-none font-medium text-sm">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">โจทย์คำถาม</label>
+                        <textarea id="stage-question" rows="3" required placeholder="พิมพ์โจทย์คำถามตรงนี้..." 
+                            class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duoBlue focus:outline-none font-medium text-sm"></textarea>
+                    </div>
+
+                    <!-- Choices Inputs -->
+                    <div class="space-y-2">
+                        <label class="block text-xs font-bold uppercase text-slate-500">ตัวเลือกตอบ 4 ข้อ (และเลือกข้อที่ถูกต้อง)</label>
+                        
+                        <div class="flex items-center gap-2">
+                            <input type="radio" name="correct-choice" value="0" checked class="w-4 h-4 text-duoGreen">
+                            <input type="text" id="choice-0" required placeholder="ตัวเลือกที่ 1" class="flex-1 px-4 py-2 rounded-xl border-2 border-slate-200 text-sm focus:border-duoBlue focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="radio" name="correct-choice" value="1" class="w-4 h-4 text-duoGreen">
+                            <input type="text" id="choice-1" required placeholder="ตัวเลือกที่ 2" class="flex-1 px-4 py-2 rounded-xl border-2 border-slate-200 text-sm focus:border-duoBlue focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="radio" name="correct-choice" value="2" class="w-4 h-4 text-duoGreen">
+                            <input type="text" id="choice-2" required placeholder="ตัวเลือกที่ 3" class="flex-1 px-4 py-2 rounded-xl border-2 border-slate-200 text-sm focus:border-duoBlue focus:outline-none">
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <input type="radio" name="correct-choice" value="3" class="w-4 h-4 text-duoGreen">
+                            <input type="text" id="choice-3" required placeholder="ตัวเลือกที่ 4" class="flex-1 px-4 py-2 rounded-xl border-2 border-slate-200 text-sm focus:border-duoBlue focus:outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">คำอธิบายเฉลยย่อ</label>
+                        <input type="text" id="stage-explanation" placeholder="คำอธิบายสั้นๆ เพิ่มเติมเมื่อตอบถูกหรือผิด" 
+                            class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duoBlue focus:outline-none font-medium text-sm">
+                    </div>
+
+                    <button type="submit" class="duo-btn w-full py-4 bg-duoBlue border-b-4 border-duoBlueDark text-white font-extrabold rounded-2xl text-lg hover:brightness-105 active:scale-95">
+                        สร้างและบันทึกลงคลัง (+20 XP) ✨
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 4: PROFILE & FIREBASE AUTH -->
+        <section id="tab-profile" class="hidden space-block">
+            <div class="max-w-2xl mx-auto space-y-6">
+
+                <!-- User Card (if Logged In) -->
+                <div id="profile-card" class="bg-white border-2 border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                    <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+                        <div class="w-20 h-20 bg-duoPurple/10 text-duoPurple rounded-3xl flex items-center justify-center text-4xl border-2 border-duoPurple/30">
+                            👨‍🎓
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex items-center justify-center sm:justify-start gap-2">
+                                <h2 id="user-display-email" class="text-xl font-extrabold text-slate-800">นักเรียน EduPath</h2>
+                                <span id="auth-provider-badge" class="px-2 py-0.5 bg-green-100 text-duoGreenDark text-[10px] font-bold rounded-full">ยืนยันแล้ว</span>
+                            </div>
+                            <p id="user-uid-label" class="text-xs text-slate-400 font-mono mt-0.5">UID: loading...</p>
+                            <p id="user-joined-date" class="text-xs text-slate-500 mt-1">เข้าใช้งานครั้งแรก: -</p>
+                        </div>
+                    </div>
+
+                    <hr class="my-6 border-slate-100">
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-2 gap-4 text-center">
+                        <div class="bg-amber-50 border-2 border-amber-200 p-4 rounded-2xl">
+                            <span class="text-2xl">⚡</span>
+                            <div class="text-xs text-amber-700 font-bold uppercase mt-1">คะแนน XP รวม</div>
+                            <div id="profile-xp-total" class="text-2xl font-black text-duoOrange">0</div>
+                        </div>
+                        <div class="bg-blue-50 border-2 border-blue-200 p-4 rounded-2xl">
+                            <span class="text-2xl">🎯</span>
+                            <div class="text-xs text-blue-700 font-bold uppercase mt-1">ระดับผู้เรียน</div>
+                            <div id="profile-rank-level" class="text-lg font-black text-duoBlue">High Schooler</div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Discovery Result Saved -->
+                    <div class="mt-6 pt-6 border-t-2 border-slate-100">
+                        <h3 class="text-sm font-extrabold text-slate-700 mb-2 flex items-center gap-2">
+                            <i class="fa-solid fa-compass text-duoBlue"></i> ผลการค้นหาตัวตนที่บันทึกล่าสุด
+                        </h3>
+                        <div id="profile-quiz-saved-info" class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs text-slate-600">
+                            ยังไม่มีข้อมูลการค้นหาตัวตน — <button onclick="switchTab('discovery')" class="text-duoBlue font-bold underline">คลิกทำแบบประเมินเลย!</button>
+                        </div>
+                    </div>
+
+                    <!-- Auth Action Buttons -->
+                    <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                        <button onclick="handleLogout()" class="duo-btn flex-1 py-3 bg-slate-100 border-b-4 border-slate-300 text-slate-600 font-extrabold rounded-2xl text-sm hover:bg-slate-200">
+                            <i class="fa-solid fa-right-from-bracket mr-2"></i> ออกจากระบบ
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Login / Sign Up Form Modal Card (Shown if requested or not signed in) -->
+                <div id="auth-modal-card" class="bg-white border-2 border-slate-200 rounded-3xl p-6 md:p-8 shadow-sm">
+                    <h3 class="text-xl font-black text-slate-800 text-center mb-2">เข้าสู่ระบบด้วย Firebase Auth</h3>
+                    <p class="text-slate-500 text-xs text-center mb-6">เข้าสู่ระบบเพื่อบันทึก XP และผลการค้นหาตัวตนอย่างถาวรใน Firestore</p>
+
+                    <div class="flex bg-slate-100 p-1 rounded-2xl mb-6">
+                        <button id="tab-btn-signin" onclick="toggleAuthSubTab('signin')" class="flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-800 shadow-sm">เข้าสู่ระบบ</button>
+                        <button id="tab-btn-signup" onclick="toggleAuthSubTab('signup')" class="flex-1 py-2 text-xs font-bold rounded-xl text-slate-500">สมัครสมาชิกใหม่</button>
+                    </div>
+
+                    <form id="auth-email-form" onsubmit="handleEmailAuth(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">อีเมลผู้ใช้งาน</label>
+                            <input type="email" id="auth-email" required placeholder="student@example.com" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duoBlue focus:outline-none text-sm font-medium">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-500 mb-1">รหัสผ่าน</label>
+                            <input type="password" id="auth-password" required placeholder="••••••••" minlength="6" class="w-full px-4 py-3 rounded-2xl border-2 border-slate-200 focus:border-duoBlue focus:outline-none text-sm font-medium">
+                        </div>
+
+                        <button type="submit" id="auth-submit-btn" class="duo-btn w-full py-3.5 bg-duoGreen border-b-4 border-duoGreenDark text-white font-extrabold rounded-2xl text-sm hover:brightness-105">
+                            เข้าสู่ระบบ
+                        </button>
+                    </form>
+
+                    <div class="relative my-6 text-center">
+                        <hr class="border-slate-200">
+                        <span class="bg-white px-3 text-[11px] font-bold text-slate-400 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 uppercase">หรือ</span>
+                    </div>
+
+                    <button onclick="handleAnonymousLogin()" class="duo-btn w-full py-3 bg-slate-100 border-b-4 border-slate-300 text-slate-700 font-extrabold rounded-2xl text-xs hover:bg-slate-200">
+                        ⚡ เข้าใช้งานชั่วคราวแบบ Guest
+                    </button>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Interactive Play Stage Modal -->
+    <div id="play-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white border-2 border-slate-200 rounded-3xl max-w-xl w-full p-6 shadow-2xl relative space-y-6">
+            <!-- Modal Header -->
+            <div class="flex items-center justify-between">
+                <span id="play-modal-tag" class="px-3 py-1 bg-green-100 text-duoGreenDark text-xs font-bold rounded-full">หมวดหมู่</span>
+                <button onclick="closePlayModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 font-bold hover:bg-slate-200">✕</button>
+            </div>
+
+            <!-- Question Body -->
+            <div>
+                <h3 id="play-modal-title" class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">ชื่อด่านแบบฝึกหัด</h3>
+                <p id="play-modal-question" class="text-lg font-bold text-slate-800 leading-snug">
+                    โจทย์คำถาม...
+                </p>
+            </div>
+
+            <!-- Choices Grid -->
+            <div id="play-modal-choices" class="space-y-3">
+                <!-- Choices rendered here -->
+            </div>
+
+            <!-- Explanation / Feedback Banner -->
+            <div id="play-feedback-box" class="hidden p-4 rounded-2xl text-sm font-bold flex items-center gap-3">
+                <span id="feedback-icon" class="text-2xl"></span>
+                <div id="feedback-text" class="flex-1"></div>
+            </div>
+
+            <!-- Next Button -->
+            <button id="play-action-btn" onclick="checkSelectedAnswer()" class="duo-btn w-full py-4 bg-duoGreen border-b-4 border-duoGreenDark text-white font-extrabold rounded-2xl text-base">
+                ส่งคำตอบ ✨
+            </button>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-20 md:bottom-8 right-4 bg-slate-800 text-white px-5 py-3 rounded-2xl font-bold text-xs shadow-xl z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2">
+        <span id="toast-icon">✨</span>
+        <span id="toast-msg">ข้อความการแจ้งเตือน</span>
+    </div>
+
+    <!-- FIREBASE MODULES IMPORT -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { 
+            getAuth, 
+            signInAnonymously, 
+            signInWithCustomToken, 
+            createUserWithEmailAndPassword, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            getDoc, 
+            setDoc, 
+            updateDoc, 
+            collection, 
+            getDocs, 
+            onSnapshot, 
+            addDoc 
+        } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Get environment App ID
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'edupath-thailand';
+
+        // Firebase Configuration Setup
+        let firebaseConfig;
+        if (typeof __firebase_config !== 'undefined') {
+            try {
+                firebaseConfig = typeof __firebase_config === 'string' ? JSON.parse(__firebase_config) : __firebase_config;
+            } catch(e) {
+                console.warn("Using fallback firebase configuration", e);
+            }
+        }
+        if (!firebaseConfig) {
+            firebaseConfig = {
+                apiKey: "AIzaSyDemoDummyKeyEduPathTH12345",
+                authDomain: "edupath-th.firebaseapp.com",
+                projectId: "edupath-th",
+                storageBucket: "edupath-th.appspot.com",
+                messagingSenderId: "1234567890",
+                appId: "1:1234567890:web:abcdef123456"
+            };
+        }
+
+        // Initialize Firebase Services
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // App State
+        window.appState = {
+            currentUser: null,
+            userXP: 0,
+            activeTab: 'learn',
+            customStages: [],
+            selectedFilter: 'all',
+            savedQuizResult: null
+        };
+
+        // Web Audio Synthesizer Sound Effects
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        window.playTone = function(type) {
+            if (audioCtx.state === 'suspended') audioCtx.resume();
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            if (type === 'success') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(523.25, audioCtx.currentTime); // C5
+                osc.frequency.exponentialRampToValueAtTime(783.99, audioCtx.currentTime + 0.15); // G5
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.3);
+            } else if (type === 'wrong') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + 0.2);
+                gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.25);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.25);
+            } else if (type === 'fanfare') {
+                const now = audioCtx.currentTime;
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(523.25, now);
+                osc.frequency.setValueAtTime(659.25, now + 0.1);
+                osc.frequency.setValueAtTime(783.99, now + 0.2);
+                osc.frequency.setValueAtTime(1046.50, now + 0.3);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                osc.start(now);
+                osc.stop(now + 0.6);
+            }
+        };
+
+        // Authentication State Listener
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                window.appState.currentUser = user;
+                document.getElementById('user-display-email').innerText = user.email || (user.isAnonymous ? 'ผู้ใช้งานแบบ Guest' : 'นักเรียน EduPath');
+                document.getElementById('user-uid-label').innerText = `UID: ${user.uid}`;
+                document.getElementById('auth-provider-badge').innerText = user.isAnonymous ? 'Guest' : 'สมาชิกหลัก';
+
+                // Synchronize User Firestore Profile (Rule 1 Strict Path)
+                await syncUserProfile(user.uid);
+                // Subscribe to real-time custom stages (Rule 1 Strict Path)
+                subscribeCustomStages();
+            } else {
+                // Perform mandatory rule auth fallback
+                try {
+                    if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                        await signInWithCustomToken(auth, __initial_auth_token);
+                    } else {
+                        await signInAnonymously(auth);
+                    }
+                } catch(e) {
+                    console.error("Auth fallback error:", e);
+                }
+            }
+        });
+
+        // Sync Profile Data from Firestore
+        async function syncUserProfile(userId) {
+            if (!userId) return;
+            const profileRef = doc(db, 'artifacts', appId, 'users', userId, 'profile', 'userData');
+            
+            try {
+                const snap = await getDoc(profileRef);
+                if (snap.exists()) {
+                    const data = snap.data();
+                    window.appState.userXP = data.xp || 0;
+                    window.appState.savedQuizResult = data.savedQuizResult || null;
+                    if (data.joinedDate) {
+                        document.getElementById('user-joined-date').innerText = `เข้าใช้งานครั้งแรก: ${data.joinedDate}`;
+                    }
+                } else {
+                    const nowStr = new Date().toLocaleDateString('th-TH');
+                    window.appState.userXP = 0;
+                    await setDoc(profileRef, {
+                        xp: 0,
+                        joinedDate: nowStr,
+                        email: auth.currentUser?.email || 'Guest'
+                    });
+                    document.getElementById('user-joined-date').innerText = `เข้าใช้งานครั้งแรก: ${nowStr}`;
+                }
+                updateUIXP();
+                renderProfileQuizInfo();
+            } catch(err) {
+                console.error("Error syncing profile:", err);
+            }
+        }
+
+        // Real-time custom stages subscriber from Firestore Public Path
+        function subscribeCustomStages() {
+            if (!auth.currentUser) return;
+            const stagesCol = collection(db, 'artifacts', appId, 'public', 'data', 'customStages');
+            
+            onSnapshot(stagesCol, (snapshot) => {
+                const customArr = [];
+                snapshot.forEach(docSnap => {
+                    customArr.push({ id: docSnap.id, ...docSnap.data() });
+                });
+                window.appState.customStages = customArr;
+                renderStages();
+            }, (error) => {
+                console.error("Custom stages snapshot error:", error);
+            });
+        }
+
+        // Export Auth Helpers to Window
+        window.handleEmailAuth = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const pass = document.getElementById('auth-password').value;
+            const isSignUp = document.getElementById('tab-btn-signup').classList.contains('bg-white');
+
+            try {
+                if (isSignUp) {
+                    await createUserWithEmailAndPassword(auth, email, pass);
+                    showToast("สมัครสมาชิกสำเร็จ!", "🎉");
+                } else {
+                    await signInWithEmailAndPassword(auth, email, pass);
+                    showToast("เข้าสู่ระบบสำเร็จ!", "👋");
+                }
+            } catch(err) {
+                console.error("Auth Error:", err);
+                showToast(err.message.includes('auth/wrong-password') ? 'รหัสผ่านไม่ถูกต้อง' : 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ', "❌");
+            }
+        };
+
+        window.handleAnonymousLogin = async function() {
+            try {
+                await signInAnonymously(auth);
+                showToast("เข้าใช้งานแบบ Guest เรียบร้อย", "⚡");
+            } catch(e) {
+                showToast("ไม่สามารถสร้างบัญชี Guest ได้", "❌");
+            }
+        };
+
+        window.handleLogout = async function() {
+            await signOut(auth);
+            showToast("ออกจากระบบแล้ว", "ℹ️");
+        };
+
+        window.addXPToUser = async function(points) {
+            window.appState.userXP += points;
+            updateUIXP();
+            window.playTone('fanfare');
+
+            if (auth.currentUser) {
+                const profileRef = doc(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'profile', 'userData');
+                try {
+                    await updateDoc(profileRef, { xp: window.appState.userXP });
+                } catch(e) {
+                    // fallback if doc doesn't exist
+                    await setDoc(profileRef, { xp: window.appState.userXP }, { merge: true });
+                }
+            }
+        };
+
+        window.saveQuizResultToFirestore = async function() {
+            if (!auth.currentUser || !window.appState.savedQuizResult) return;
+            const profileRef = doc(db, 'artifacts', appId, 'users', auth.currentUser.uid, 'profile', 'userData');
+            
+            try {
+                await updateDoc(profileRef, { savedQuizResult: window.appState.savedQuizResult });
+                await window.addXPToUser(50);
+                showToast("บันทึกผลลงโปรไฟล์และรับ +50 XP แล้ว!", "🎉");
+                renderProfileQuizInfo();
+            } catch(e) {
+                await setDoc(profileRef, { savedQuizResult: window.appState.savedQuizResult }, { merge: true });
+                await window.addXPToUser(50);
+                showToast("บันทึกผลลงโปรไฟล์เรียบร้อย!", "🎉");
+                renderProfileQuizInfo();
+            }
+        };
+
+        window.handleCreateStage = async function(e) {
+            e.preventDefault();
+            if (!auth.currentUser) {
+                showToast("โปรดเข้าสู่ระบบเพื่อสร้างด่าน", "⚠️");
+                return;
+            }
+
+            const title = document.getElementById('stage-title').value;
+            const category = document.getElementById('stage-category').value;
+            const subject = document.getElementById('stage-subject').value;
+            const question = document.getElementById('stage-question').value;
+            const choice0 = document.getElementById('choice-0').value;
+            const choice1 = document.getElementById('choice-1').value;
+            const choice2 = document.getElementById('choice-2').value;
+            const choice3 = document.getElementById('choice-3').value;
+            const correctRadio = document.querySelector('input[name="correct-choice"]:checked')?.value || "0";
+            const explanation = document.getElementById('stage-explanation').value;
+
+            const newStage = {
+                title,
+                category,
+                subject,
+                question,
+                choices: [choice0, choice1, choice2, choice3],
+                correctAnswer: parseInt(correctRadio),
+                explanation,
+                creatorId: auth.currentUser.uid,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const stagesCol = collection(db, 'artifacts', appId, 'public', 'data', 'customStages');
+                await addDoc(stagesCol, newStage);
+                await window.addXPToUser(20);
+                document.getElementById('create-stage-form').reset();
+                showToast("สร้างด่านเรียบร้อย (+20 XP)", "✨");
+                switchTab('learn');
+            } catch(err) {
+                console.error("Error creating stage:", err);
+                showToast("ไม่สามารถบันทึกด่านได้", "❌");
+            }
+        };
+    </script>
+
+    <!-- UI INTERACTION AND QUIZ ENGINE LOGIC -->
+    <script>
+        // Default Built-in High School Practice Stages
+        const builtInStages = [
+            {
+                id: 'default-1',
+                category: 'm4',
+                subject: 'คณิตศาสตร์ ม.4',
+                title: 'เซตและการดำเนินการ',
+                question: 'กำหนดให้ A = {1, 2, 3} และ B = {2, 3, 4} แล้ว A ∩ B (อินเตอร์เซกชัน) คือข้อใด?',
+                choices: ['{1, 4}', '{2, 3}', '{1, 2, 3, 4}', '∅ (เซตว่าง)'],
+                correctAnswer: 1,
+                explanation: 'A ∩ B คือเซตของสมาชิกที่ซ้ำกันระหว่าง A และ B ซึ่งได้แก่ {2, 3}'
+            },
+            {
+                id: 'default-2',
+                category: 'm5',
+                subject: 'ฟิสิกส์ ม.5',
+                title: 'คลื่นกลและความยาวคลื่น',
+                question: 'ถ้าคลื่นมีความถี่ 50 Hz และมีความเร็ว 300 m/s ความยาวคลื่น (λ) จะมีค่าเท่าใด?',
+                choices: ['6 เมตร', '150 เมตร', '0.16 เมตร', '15,000 เมตร'],
+                correctAnswer: 0,
+                explanation: 'ใช้สูตร v = f × λ ดังนั้น λ = v / f = 300 / 50 = 6 เมตร'
+            },
+            {
+                id: 'default-3',
+                category: 'm6',
+                subject: 'เคมี ม.6',
+                title: 'พอลิเมอร์และสารชีวโมเลกุล',
+                question: 'ข้อใดจัดเป็นพอลิเมอร์ธรรมชาติแบบเส้นที่มีความแข็งแรงสูงมาก?',
+                choices: ['พลาสติก PE', 'เซลลูโลส (Cellulose)', 'ยางสังเคราะห์', 'ไนลอน (Nylon)'],
+                correctAnswer: 1,
+                explanation: 'เซลลูโลสเป็นพอลิเมอร์ธรรมชาติที่พบในผนังเซลล์พืช มีโครงสร้างเส้นตรงแข็งแรง'
+            },
+            {
+                id: 'default-4',
+                category: 'tcas',
+                subject: 'TGAT1 การคิดอย่างมีเหตุผล',
+                title: 'ความสามารถทางภาษาและการสื่อสาร',
+                question: 'คำว่า "นวัตกรรม" มีความหมายตรงกับความหมายในข้อใดมากที่สุด?',
+                choices: [
+                    'การลอกเลียนแบบสิ่งเดิมให้ดีขึ้น',
+                    'การประดิษฐ์หรือสร้างสรรค์สิ่งใหม่ที่นำไปใช้ประโยชน์ได้จริง',
+                    'การรักษาวิธีการทำงานแบบดั้งเดิมไว้',
+                    'การนำเทคโนโลยีต่างประเทศเข้ามาใช้ทั้งหมด'
+                ],
+                correctAnswer: 1,
+                explanation: 'นวัตกรรม (Innovation) คือการคิดค้นสร้างสรรค์สิ่งใหม่เพื่อสร้างมูลค่าและคุณประโยชน์'
+            },
+            {
+                id: 'default-5',
+                category: 'tcas',
+                subject: 'TPAT3 วิศวกรรมศาสตร์',
+                title: 'มิติสัมพันธ์และตรรกศาสตร์เครื่องกล',
+                question: 'เฟือง A มี 10 ฟัน หมุนตามเข็มนาฬิกา ขบกับเฟือง B มี 20 ฟัน ข้อใดถูกต้อง?',
+                choices: [
+                    'เฟือง B หมุนตามเข็มนาฬิกา และหมุนไวกว่า',
+                    'เฟือง B หมุนทวนเข็มนาฬิกา และหมุนช้ากว่าครึ่งหนึ่ง',
+                    'เฟือง B หมุนตามเข็มนาฬิกา และหมุนด้วยความเร็วเท่ากัน',
+                    'เฟือง B หมุนทวนเข็มนาฬิกา และหมุนเร็วกว่า 2 เท่า'
+                ],
+                correctAnswer: 1,
+                explanation: 'เฟืองที่ขบกันจะหมุนทิศตรงข้ามกัน (ทวนเข็ม) และเฟืองที่มีฟันมากกว่าจะหมุนด้วยรอบที่ช้ากว่า'
+            }
+        ];
+
+        // 20 RIASEC Discovery Questions (8 Broad + 12 Situational)
+        const discoveryQuestions = [
+            // 8 Broad Questions
+            {
+                categoryTag: 'Life Values (ค่านิยม)',
+                question: '1. ในอนาคต สิ่งที่คุณคาดหวังให้เกิดขึ้นกับชีวิตการทำงานมากที่สุดคืออะไร?',
+                choices: [
+                    { text: 'ได้ลงมือสร้างหรือประดิษฐ์ชิ้นงาน/อุปกรณ์ที่จับต้องได้จริง', riasec: 'R' },
+                    { text: 'ได้คิดค้น ค้นพบความรู้ใหม่ๆ หรือไขปริศนาทางวิทยาศาสตร์', riasec: 'I' },
+                    { text: 'ได้สร้างสรรค์ผลงานศิลปะ สื่อบันเทิง หรือการแสดงออกที่เป็นเอกลักษณ์', riasec: 'A' },
+                    { text: 'ได้ช่วยเหลือ พัฒนาคุณภาพชีวิต หรือรักษาผู้คนในสังคม', riasec: 'S' }
+                ]
+            },
+            {
+                categoryTag: 'Lifestyle (สไตล์การทำงาน)',
+                question: '2. บรรยากาศการทำงานแบบไหนที่ทำให้คุณรู้สึกมีพลังและโฟกัสได้ดีที่สุด?',
+                choices: [
+                    { text: 'สถานที่ลุยๆ ห้องปฏิบัติการ หรือไซท์งานกลางแจ้ง', riasec: 'R' },
+                    { text: 'ห้องวิจัย ห้องสมุด หรือหน้าจอคอมพิวเตอร์ที่เงียบสงบ', riasec: 'I' },
+                    { text: 'สตูดีโอออกแบบ ห้องอัดเสียง หรือพื้นที่เปิดกว้างทางไอเดีย', riasec: 'A' },
+                    { text: 'การได้เจอผู้คน เจรจา วางแผน หรือบริหารทีมในองค์กรเติบโตสูง', riasec: 'E' }
+                ]
+            },
+            {
+                categoryTag: 'Mindset (มุมมองความคิด)',
+                question: '3. เมื่อต้องเริ่มต้นทำสิ่งใหม่ๆ คุณมักจะเริ่มต้นจากจุดไหนก่อน?',
+                choices: [
+                    { text: 'ค้นหาข้อมูล ทฤษฎี และผลการวิจัยรองรับอย่างถี่ถ้วน', riasec: 'I' },
+                    { text: 'จินตนาการถึงความเป็นไปได้ใหม่ๆ โดยไม่ต้องมีกรอบเดิมๆ', riasec: 'A' },
+                    { text: 'พูดคุยแลกเปลี่ยนความคิดเห็นกับผู้เกี่ยวข้องเพื่อฟังความต้องการ', riasec: 'S' },
+                    { text: 'จัดทำระบบ วางตารางเวลา และทำChecklist เป็นขั้นตอนชัดเจน', riasec: 'C' }
+                ]
+            },
+            {
+                categoryTag: 'Risk Tolerance (การรับมือความเสี่ยง)',
+                question: '4. คุณมีความรู้สึกอย่างไรกับการต้องตัดสินใจภายใต้สถานการณ์ที่กดดัน?',
+                choices: [
+                    { text: 'กล้าเสี่ยง ชอบความท้าทาย และชอบโน้มน้าวให้ผู้อื่นเชื่อมั่น', riasec: 'E' },
+                    { text: 'เน้นความถูกต้องรอบคอบ ยึดตามระเบียบและข้อมูลตรรกะเป๊ะๆ', riasec: 'C' },
+                    { text: 'ใช้สัญชาตญาณความรู้สึกและความเป็นมนุษย์เป็นหลักในการตัดสินใจ', riasec: 'S' },
+                    { text: 'เน้นการทดลองลงมือทำจริงแล้วค่อยปรับแก้ตามปัญหาหน้างาน', riasec: 'R' }
+                ]
+            },
+            {
+                categoryTag: 'Communication (สไตล์การสื่อสาร)',
+                question: '5. เวลาอธิบายเรื่องยากๆ ให้เพื่อนฟัง คุณมักจะใช้รูปแบบไหน?',
+                choices: [
+                    { text: 'ใช้อุปกรณ์ เครื่องมือ หรือวาดแผนภาพแสดงโครงสร้างให้เห็นชัดๆ', riasec: 'R' },
+                    { text: 'ใช้สถิติ กราฟ ข้อมูลตัวเลข หรือสมการเปรียบเทียบ', riasec: 'I' },
+                    { text: 'ใช้การเล่าเรื่อง (Storytelling) หรือสื่อวิดีโอรูปภาพเปรียบเปรย', riasec: 'A' },
+                    { text: 'ใช้น้ำเสียงเป็นกันเอง ใส่ใจความรู้สึกเพื่อน และยกตัวอย่างใกล้ตัว', riasec: 'S' }
+                ]
+            },
+            {
+                categoryTag: 'Life Values (เป้าหมายชีวิต)',
+                question: '6. นิยามความสำเร็จสูงสุดในสายตาของคุณคืออะไร?',
+                choices: [
+                    { text: 'การได้เป็นผู้นำ มีธุรกิจของตัวเอง หรือขับเคลื่อนเป้าหมายใหญ่', riasec: 'E' },
+                    { text: 'การมีความมั่นคง มีระบบชีวิตที่เป็นระเบียบเรียบร้อยและถูกต้อง', riasec: 'C' },
+                    { text: 'การได้เป็นผู้เชี่ยวชาญเฉพาะทางที่ใครๆ ก็ยอมรับในความรู้', riasec: 'I' },
+                    { text: 'การได้สร้างแรงบันดาลใจและเปลี่ยนชีวิตผู้คนให้ดีขึ้น', riasec: 'S' }
+                ]
+            },
+            {
+                categoryTag: 'Lifestyle (วันว่าง)',
+                question: '7. หากมีเวลาว่าง 1 วันเต็มๆ กิจกรรมที่คุณอยากทำมากที่สุดคือ?',
+                choices: [
+                    { text: 'ซ่อมแซมสิ่งของ ประกอบโมเดล หรือเล่นกีฬาออกกำลังกาย', riasec: 'R' },
+                    { text: 'ฟังเพลง ดูหนังเสพงานศิลป์ เขียนบันทึก หรือถ่ายรูป', riasec: 'A' },
+                    { text: 'อ่านบทความวิเคราะห์ วิจัย ค้นคว้าเรื่องเทคโนโลยีใหม่ๆ', riasec: 'I' },
+                    { text: 'ศึกษาตลาด จัดสรรเงินลงทุน หรือวางแผนธุรกิจสตาร์ทอัพ', riasec: 'E' }
+                ]
+            },
+            {
+                categoryTag: 'Mindset (ความถนัดส่วนตัว)',
+                question: '8. สิ่งที่เพื่อนๆ มักจะออกปากชมคุณอยู่บ่อยๆ คือเรื่องอะไร?',
+                choices: [
+                    { text: 'การทำงานละเอียด จัดเก็บไฟล์เอกสาร หรือคำนวณตัวเลขไม่เคยพลาด', riasec: 'C' },
+                    { text: 'การมีความคิดสร้างสรรค์ มีสไตล์เป็นตัวของตัวเองไม่ซ้ำใคร', riasec: 'A' },
+                    { text: 'การฟังจับใจความความรู้สึกของผู้อื่นเก่ง และเป็นที่ปรึกษาที่ดี', riasec: 'S' },
+                    { text: 'การมีวาทศิลป์ พูดจาชวนฟัง และกล้าแสดงออกบนเวที', riasec: 'E' }
+                ]
+            },
+
+            // 12 Situational Questions
+            {
+                categoryTag: 'สถานการณ์ที่ 1: กิจกรรมโรงเรียน',
+                question: '9. ในงานนิทรรศการวิชาการของโรงเรียน คุณอยากรับหน้าที่ในซุ้มไหนมากที่สุด?',
+                choices: [
+                    { text: 'ฝ่ายคุมเครื่องเสียง ติดตั้งเวที และดูแลอุปกรณ์เทคนิค', riasec: 'R' },
+                    { text: 'ฝ่ายคิดโจทย์แข่งขัน นำเสนอเกร็ดความรู้ทางวิทยาศาสตร์', riasec: 'I' },
+                    { text: 'ฝ่ายออกแบบป้ายนิทรรศการ ตกแต่งซุ้ม และทำสื่อโปสเตอร์', riasec: 'A' },
+                    { text: 'ฝ่ายพิธีกร ต้อนรับน้องๆ และสันทนาการสร้างความสุข', riasec: 'S' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 2: โปรเจกต์กลุ่ม',
+                question: '10. เมื่อต้องทำรายงานกลุ่มส่งครู คุณมักจะได้รับมอบหมายหน้าที่ใด?',
+                choices: [
+                    { text: 'หัวหน้ากลุ่ม ประสานงาน นำเสนอหน้าชั้นเรียน และผลักดันทีม', riasec: 'E' },
+                    { text: 'ฝ่ายตรวจทานความถูกต้อง ตรวจคำผิด รูปแบบเล่มรายงาน และอ้างอิง', riasec: 'C' },
+                    { text: 'ฝ่ายรวบรวมข้อมูล วิเคราะห์เนื้อหาเชิงลึกจากแหล่งข้อมูลน่าเชื่อถือ', riasec: 'I' },
+                    { text: 'ฝ่ายออกแบบ PowerPoint สไลด์นำเสนอให้สวยงามตื่นตาตื่นใจ', riasec: 'A' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 3: สื่อที่ชอบเสพ',
+                question: '11. เวลาไถฟีดโซเชียลมีเดีย คอนเทนต์ประเภทไหนที่หยุดสายตาคุณได้นานที่สุด?',
+                choices: [
+                    { text: 'คลิปรีวิวแกะกล่องเทคโนโลยี ประกอบคอมพิวเตอร์ หรือช่างฝีมือ', riasec: 'R' },
+                    { text: 'คลิปสรุปประเด็นสังคม จิตวิทยาพัฒนาตนเอง หรือการสอนเรียน', riasec: 'S' },
+                    { text: 'คลิปวิเคราะห์หุ้น อสังหาริมทรัพย์ กลยุทธ์การตลาด หรือการดำเนินธุรกิจ', riasec: 'E' },
+                    { text: 'คลิปแนะแนวการตารางการเงิน ตารางเวลาชีวิต หรือระบบการทำงาน', riasec: 'C' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 4: การแก้ปัญหาเฉพาะหน้า',
+                question: '12. หากอุปกรณ์ในห้องเรียนชำรุดกะทันหัน คุณจะปฏิกิริยาอย่างไร?',
+                choices: [
+                    { text: 'เดินเข้าไปดูโครงสร้างเครื่อง ลองขันน็อตหรือขยับสายแก้ปัญหาเบื้องต้น', riasec: 'R' },
+                    { text: 'หาสาเหตุอาการเสีย ถ่ายรูปไว้ แล้วแจ้งเจ้าหน้าที่พร้อมระบุรหัสอุปกรณ์', riasec: 'C' },
+                    { text: 'ช่วยแจ้งและปลอบใจเพื่อนๆ ในห้องไม่ให้ตื่นตระหนก', riasec: 'S' },
+                    { text: 'เสนอไอเดียปรับใช้สิ่งอื่นแทนชั่วคราวเพื่อให้อาจารย์สอนต่อได้', riasec: 'A' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 5: ชมรม ม.ปลาย',
+                question: '13. หากต้องเลือกตั้งชมรมในโรงเรียน คุณจะสมัครเข้าชมรมใด?',
+                choices: [
+                    { text: 'ชมรมหุ่นยนต์พิฆาต / ช่างบำรุงอาสา', riasec: 'R' },
+                    { text: 'ชมรมนักสืบวิทยาศาสตร์ / ดาราศาสตร์และอวกาศ', riasec: 'I' },
+                    { text: 'ชมรมการละครและนิเทศศิลป์ / วงดนตรี', riasec: 'A' },
+                    { text: 'ชมรมจิตอาสาเพื่อสังคมและเพื่อนพี่น้อง', riasec: 'S' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 6: การซื้อสินค้า',
+                question: '14. เวลาจะเลือกซื้อของชิ้นใหญ่สักชิ้น สิ่งที่คุณพิจารณาเป็นอันดับแรกคือ?',
+                choices: [
+                    { text: 'ความสวยงาม ดีไซน์ ภาพลักษณ์ และความรู้สึกประทับใจ', riasec: 'A' },
+                    { text: 'ความคุ้มค่า ตัวเลขสเปก ผลทดสอบประสิทธิภาพตามหลักการ', riasec: 'I' },
+                    { text: 'วัสดุความคงทน แข็งแรง ทนทานต่อการใช้งานลุยๆ', riasec: 'R' },
+                    { text: 'โปรโมชันการผ่อนชำระ ส่วนลด และสิทธิประโยชน์สะสมแต้ม', riasec: 'E' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 7: การทำงานร่วมกับคน',
+                question: '15. เมื่อเกิดความขัดแย้งในกลุ่มเพื่อน วิธีการจัดการของคุณคือ?',
+                choices: [
+                    { text: 'เปิดอกพูดคุย รับฟังความรู้สึกทุกคน แล้วไกล่เกลี่ยด้วยความเข้าใจ', riasec: 'S' },
+                    { text: 'นำเสนอข้อตกลงเชิงธุรกิจหรือผลประโยชน์ที่ลงตัวแก่ทุกฝ่าย', riasec: 'E' },
+                    { text: 'อ้างอิงตามกฎ กติกา หรือข้อตกลงเดิมที่เคยตกลงกันไว้เป็นหลัก', riasec: 'C' },
+                    { text: 'ใช้ข้อมูลเหตุผลและข้อเท็จจริงเข้าสู้ โดยตัดอารมณ์ส่วนตัวออก', riasec: 'I' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 8: การจัดการเงินส่วนตัว',
+                question: '16. สไตล์การบริหารเงินค่าขนมที่คุณได้รับคือแบบใด?',
+                choices: [
+                    { text: 'จดบันทึกรายรับ-รายจ่ายทุกบาททุกสตางค์อย่างถูกต้องในแอป', riasec: 'C' },
+                    { text: 'นำเงินส่วนหนึ่งไปต่อยอด ลงทุน หรือค้าขายเล็กๆ น้อยๆ ให้เงินทำงาน', riasec: 'E' },
+                    { text: 'แบ่งเงินส่วนหนึ่งไปบริจาคทำบุญ หรือเลี้ยงขนมเพื่อนฝูง', riasec: 'S' },
+                    { text: 'นำเงินไปซื้ออุปกรณ์ทำชิ้นงาน หรือซื้อหนังสือที่อยากค้นคว้า', riasec: 'R' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 9: การสอบแข่งขัน',
+                question: '17. บรรยากาศการเตรียมตัวสอบสนามใหญ่อย่าง TCAS ของคุณเป็นอย่างไร?',
+                choices: [
+                    { text: 'ตั้งเป้าหมายคะแนนสูงสุด สรุปแผนการอ่านหนังสือชัดเจนเพื่อเอาชนะ', riasec: 'E' },
+                    { text: 'ทำสรุปโน้ตด้วยสีสัน วาด Mind Map และแผนภาพจำง่าย', riasec: 'A' },
+                    { text: 'ตะลุยทำข้อสอบเก่า ตรวจหาจุดบกพร่องและวิเคราะห์แนวโน้มข้อสอบ', riasec: 'I' },
+                    { text: 'จับกลุ่มติวหนังสือกับเพื่อน ช่วยอธิบายจุดที่เพื่อนไม่เข้าใจ', riasec: 'S' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 10: การรับฟังคำติชม',
+                question: '18. เมื่อผลงานของคุณถูกวิจารณ์ คุณคาดหวังคำติชมในรูปแบบใดมากที่สุด?',
+                choices: [
+                    { text: 'บอกข้อผิดพลาดที่ชัดเจน และจุดที่ต้องแก้ไขตามมาตรฐานกฎเกณฑ์', riasec: 'C' },
+                    { text: 'มองเห็นคุณค่า เจตนา และความทุ่มเทใส่ใจที่คุณตั้งใจทำ', riasec: 'S' },
+                    { text: 'เสนอไอเดียแปลกใหม่ ต่อยอดมุมมองทางศิลปะ/ดีไซน์', riasec: 'A' },
+                    { text: 'ให้คำแนะนำทางเทคนิค การปรับใช้อุปกรณ์ และโซลูชันที่นำไปแก้ได้จริง', riasec: 'R' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 11: เทคโนโลยี AI',
+                question: '19. คุณสนใจแง่มุมไหนเกี่ยวกับปัญญาประดิษฐ์ (AI) มากที่สุด?',
+                choices: [
+                    { text: 'การนำ AI มาช่วยเจนภาพ วาดรูป ทำเพลง หรือเขียนบทวรรณกรรม', riasec: 'A' },
+                    { text: 'กลไกอัลกอริทึม การเทรนโมเดลคณิตศาสตร์เบื้องหลัง AI', riasec: 'I' },
+                    { text: 'การนำ AI มาสร้างโมเดลธุรกิจใหม่ๆ หรือสร้างรายได้ให้องค์กร', riasec: 'E' },
+                    { text: 'การสร้างโรบอตหุ่นยนต์อัตโนมัติที่ทำงานทดแทนแรงงานมนุษย์', riasec: 'R' }
+                ]
+            },
+            {
+                categoryTag: 'สถานการณ์ที่ 12: การเดินทางท่องเที่ยว',
+                question: '20. สไตล์การท่องเที่ยวต่างจังหวัดหรือต่างประเทศที่คุณชื่นชอบมากที่สุดคือ?',
+                choices: [
+                    { text: 'เที่ยวชมพิพิธภัณฑ์ประวัติศาสตร์ หอศิลป์ หรืองานเทศกาลวัฒนธรรมท้องถิ่น', riasec: 'A' },
+                    { text: 'เที่ยวลุยธรรมชาติ แคมป์ปิ้ง ปีนเขา หรือทำกิจกรรมแอดเวนเจอร์', riasec: 'R' },
+                    { text: 'ทำตารางการเดินทางละเอียด (Itinerary) จองตั๋วล่วงหน้า เป๊ะตามเวลา', riasec: 'C' },
+                    { text: 'เที่ยวพักผ่อนกับครอบครัว/เพื่อนกลุ่มใหญ่ มุ่งเน้นความสุขและรอยยิ้ม', riasec: 'S' }
+                ]
+            }
+        ];
+
+        // Holland RIASEC Code mapping for Thai High School Context
+        const riasecFacultyMap = {
+            'R': {
+                name: 'Realistic (นักปฏิบัติการ/ลุยงานจริง)',
+                faculties: [
+                    { name: 'คณะวิศวกรรมศาสตร์ (สาขาโยธา/เครื่องกล/ไฟฟ้า/หุ่นยนต์)', desc: 'เหมาะสำหรับผู้ชอบโครงสร้าง งานช่าง คำนวณระบบ และเครื่องจักร' },
+                    { name: 'คณะเกษตรศาสตร์ / สัตวแพทยศาสตร์', desc: 'เหมาะสำหรับผู้รักธรรมชาติ สัตว์เลี้ยง การผลิตทางการเกษตรเทคโนโลยี' },
+                    { name: 'คณะสถาปัตยกรรมศาสตร์ (สาขาก่อสร้าง/เทคโนโลยีอาคาร)', desc: 'เน้นการนำแบบเขียนไปก่อสร้างสร้างอาคารจริงอย่างแข็งแรง' }
+                ],
+                unis: ['จุฬาลงกรณ์มหาวิทยาลัย', 'ม.กษตรศาสตร์', 'มจธ. (บางมด)', 'สจล. (ลาดกระบัง)', 'ม.เชียงใหม่'],
+                tcasWeights: [
+                    { name: 'TPAT3 ความถนัดวิทยาศาสตร์/เทคโนโลยี/วิศวะ', weight: '30-40%' },
+                    { name: 'A-Level คณิตศาสตร์ประยุกต์ 1', weight: '25-30%' },
+                    { name: 'TGAT1-3 การคิดและสื่อสาร', weight: '20%' }
+                ],
+                salary: '22,000 - 45,000 บาท/เดือน'
+            },
+            'I': {
+                name: 'Investigative (นักคิดวิเคราะห์/วิจัย)',
+                faculties: [
+                    { name: 'คณะแพทยศาสตร์ / ทันตแพทยศาสตร์ / เภสัชศาสตร์', desc: 'วิเคราะห์อาการป่วย การออกฤทธิ์ของยา และงานวิจัยทางการแพทย์' },
+                    { name: 'คณะวิทยาศาสตร์ (สาขาข่อยวิทยาการคอมพิวเตอร์/ดาต้า/ชีวเคมี)', desc: 'เจาะลึกอัลกอริทึม การค้นพบความรู้ทางวิทยาศาสตร์และข้อมูล' },
+                    { name: 'คณะสหเวชศาสตร์ / เทคนิคการแพทย์', desc: 'ตรวจวิเคราะห์สิ่งส่งตรวจทางห้องปฏิบัติการอย่างแม่นยำ' }
+                ],
+                unis: ['มหิดล (ศิริราช/รามา)', 'จุฬาลงกรณ์มหาวิทยาลัย', 'ม.เชียงใหม่', 'ม.ขอนแก่น', 'ม.ธรรมศาสตร์'],
+                tcasWeights: [
+                    { name: 'TPAT1 ความถนัดแพทย์ (กสพท)', weight: '30%' },
+                    { name: 'A-Level วิทยาศาสตร์ (ฟิสิกส์/เคมี/ชีวะ)', weight: '40%' },
+                    { name: 'A-Level คณิต 1 & ภาษาอังกฤษ', weight: '30%' }
+                ],
+                salary: '25,000 - 65,000+ บาท/เดือน'
+            },
+            'A': {
+                name: 'Artistic (นักสร้างสรรค์/ศิลปิน)',
+                faculties: [
+                    { name: 'คณะนิเทศศาสตร์ / วารสารศาสตร์และสื่อสารมวลชน', desc: 'ผลิตสื่อภาพยนตร์ งานโฆษณา การเล่าเรื่องราว และคอนเทนต์สร้างสรรค์' },
+                    { name: 'คณะศิลปกรรมศาสตร์ / มัณฑนศิลป์ / ดิจิทัลอาร์ต', desc: 'งานดีไซน์ ออกแบบกราฟิก เกม คาแรกเตอร์ และงานศิลปะดิจิทัล' },
+                    { name: 'คณะอักษรศาสตร์ / ศิลปศาสตร์ (สาขาการเขียนและวรรณกรรม)', desc: 'งานสร้างสรรค์ภาษา การแปล และวัฒนธรรมร่วมสมัย' }
+                ],
+                unis: ['ม.จุฬาฯ (นิเทศ)', 'ม.ธรรมศาสตร์ (วารสาร)', 'ม.ศิลปากร', 'ม.ศรีนครินทรวิโรฒ (มศว)', 'ม.กรุงเทพ'],
+                tcasWeights: [
+                    { name: 'TGAT1-3 ความถนัดทั่วไป', weight: '50-60%' },
+                    { name: 'TPAT2 ความถนัดศิลปกรรมศาสตร์ (ถ้ามี)', weight: '20-30%' },
+                    { name: 'A-Level ภาษาไทย/อังกฤษ/สังคม', weight: '20-30%' }
+                ],
+                salary: '18,000 - 35,000 บาท/เดือน'
+            },
+            'S': {
+                name: 'Social (นักช่วยเหลือ/พัฒนาสังคม)',
+                faculties: [
+                    { name: 'คณะจิตวิทยา / คณะสังคมสงเคราะห์ศาสตร์', desc: 'ให้คำปรึกษา บำบัดจิตใจ และพัฒนาคุณภาพชีวิตของผู้คนในสังคม' },
+                    { name: 'คณะครุศาสตร์ / ศึกษาศาสตร์', desc: 'ถ่ายทอดความรู้ พัฒนาหลักเรียนการสอน และสร้างอนาคตให้เยาวชน' },
+                    { name: 'คณะพยาบาลศาสตร์ / สาธารณสุขศาสตร์', desc: 'ดูแลอภิบาลผู้ป่วย งานส่งเสริมสุขภาพระดับชุมชน' }
+                ],
+                unis: ['จุฬาลงกรณ์มหาวิทยาลัย', 'ม.ธรรมศาสตร์', 'ม.มหิดล', 'ม.ศรีนครินทรวิโรฒ', 'ม.เชียงใหม่'],
+                tcasWeights: [
+                    { name: 'TGAT1-3 ความถนัดทั่วไป', weight: '40%' },
+                    { name: 'TPAT5 ความถนัดครู (สำหรับกลุ่มครุศาสตร์)', weight: '20-30%' },
+                    { name: 'A-Level สังคมศึกษา & ภาษาไทย/อังกฤษ', weight: '30-40%' }
+                ],
+                salary: '18,000 - 32,000 บาท/เดือน'
+            },
+            'E': {
+                name: 'Enterprising (นักบริหาร/นักโน้มน้าว)',
+                faculties: [
+                    { name: 'คณะพาณิชยศาสตร์และการบัญชี (สาขาบริหารธุรกิจ/การตลาด/สตาร์ทอัพ)', desc: 'วางกลยุทธ์ การบริหารองค์กร การเป็นผู้ประกอบการ' },
+                    { name: 'คณะนิติศาสตร์', desc: 'กฎหมายการค้า ที่ปรึกษาองค์กร การว่าความ และการเจรจาต่อรอง' },
+                    { name: 'คณะรัฐศาสตร์ (สาขาการเมืองการปกครอง/การทูต)', desc: 'การบริหารงานเมือง นโยบายสาธารณะ และความสัมพันธ์ระหว่างประเทศ' }
+                ],
+                unis: ['ม.ธรรมศาสตร์ (มธ.)', 'จุฬาลงกรณ์มหาวิทยาลัย', 'ม.เกษตรศาสตร์', 'ม.มหิดล (MUIC)', 'ม.อัสสัมชัญ (ABAC)'],
+                tcasWeights: [
+                    { name: 'TGAT1-3 ความถนัดทั่วไป', weight: '40-50%' },
+                    { name: 'A-Level คณิตศาสตร์ประยุกต์ 1 หรือ 2', weight: '30%' },
+                    { name: 'A-Level ภาษาอังกฤษ', weight: '20-30%' }
+                ],
+                salary: '20,000 - 50,000+ บาท/เดือน'
+            },
+            'C': {
+                name: 'Conventional (นักจัดการระบบ/ความถูกต้อง)',
+                faculties: [
+                    { name: 'คณะพาณิชยศาสตร์และการบัญชี (สาขาการบัญชี/การเงิน)', desc: 'ตรวจสอบบัญชี วิเคราะห์งบการเงิน ความถูกต้องตามกฎหมายภาษี' },
+                    { name: 'คณะสถิติประยุกต์ / สารสนเทศทางธุรกิจ', desc: 'จัดระบบฐานข้อมูล ตรวจสอบความถูกต้องของข้อมูลขนาดใหญ่' },
+                    { name: 'คณะโลจิสติกส์และซัพพลายเชน', desc: 'วางแผนเส้นทาง จัดการคลังสินค้า และควบคุมระบบห่วงโซ่อุปทาน' },
+                ],
+                unis: ['จุฬาลงกรณ์มหาวิทยาลัย', 'ม.ธรรมศาสตร์', 'ม.เกษตรศาสตร์', 'ม.บูรพา', 'มจพ. (พระนครเหนือ)'],
+                tcasWeights: [
+                    { name: 'A-Level คณิตศาสตร์ประยุกต์ 1 หรือ 2', weight: '35-40%' },
+                    { name: 'TGAT1-3 ความถนัดทั่วไป', weight: '30-40%' },
+                    { name: 'A-Level ภาษาอังกฤษ', weight: '20%' }
+                ],
+                salary: '22,000 - 40,000 บาท/เดือน'
+            }
+        };
+
+        // Discovery Quiz State Variables
+        let currentQuizIndex = 0;
+        let riasecScores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+
+        function switchTab(tabName) {
+            window.appState.activeTab = tabName;
+            
+            // Hide all tab sections
+            document.querySelectorAll('.space-block').forEach(el => el.classList.add('hidden'));
+            
+            // Show selected section
+            const targetSection = document.getElementById(`tab-${tabName}`);
+            if (targetSection) targetSection.classList.remove('hidden');
+
+            // Update Desktop Nav Styling
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('bg-slate-100', 'text-duoGreen', 'text-duoBlue', 'text-duoYellowDark', 'text-duoPurple');
+                btn.classList.add('text-slate-600');
+            });
+            const activeNav = document.getElementById(`nav-${tabName}`);
+            if (activeNav) {
+                activeNav.classList.add('bg-slate-100');
+            }
+
+            // Update Mobile Nav Styling
+            document.querySelectorAll('nav.md\\:hidden button').forEach(btn => {
+                btn.classList.remove('text-duoGreen', 'text-duoBlue', 'text-duoYellowDark', 'text-duoPurple');
+                btn.classList.add('text-slate-400');
+            });
+            const activeMNav = document.getElementById(`mnav-${tabName}`);
+            if (activeMNav) {
+                activeMNav.classList.remove('text-slate-400');
+                activeMNav.classList.add('text-duoGreen');
+            }
+
+            if (tabName === 'learn') renderStages();
+        }
+
+        function filterCategory(cat) {
+            window.appState.selectedFilter = cat;
+            document.querySelectorAll('.cat-chip').forEach(btn => {
+                btn.className = "cat-chip bg-white border-2 border-slate-200 text-slate-600 px-4 py-1.5 rounded-full text-xs font-bold hover:bg-slate-50";
+            });
+            event.target.className = "cat-chip bg-duoGreen text-white px-4 py-1.5 rounded-full text-xs font-bold shadow-sm";
+            renderStages();
+        }
+
+        function renderStages() {
+            const container = document.getElementById('stages-grid');
+            if (!container) return;
+            container.innerHTML = '';
+
+            const allStages = [...builtInStages, ...window.appState.customStages];
+            const filter = window.appState.selectedFilter;
+
+            const filtered = filter === 'all' 
+                ? allStages 
+                : allStages.filter(s => s.category === filter);
+
+            if (filtered.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-3xl border-2 border-slate-200">
+                        <div class="text-4xl mb-2">📚</div>
+                        <p class="font-bold text-slate-600">ยังไม่มีด่านในหมวดหมู่นี้</p>
+                        <p class="text-xs text-slate-400 mt-1">มาร่วมสร้างด่านแรกด้วยเมนู "สร้างด่าน" กันเลย!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(stage => {
+                const isCustom = !stage.id.startsWith('default-');
+                const badgeColor = stage.category === 'tcas' ? 'bg-purple-100 text-duoPurple' : 'bg-blue-100 text-duoBlue';
+                
+                const cardHtml = `
+                    <div class="duo-card bg-white border-2 border-slate-200 rounded-3xl p-5 flex flex-col justify-between h-full">
+                        <div>
+                            <div class="flex items-center justify-between mb-3">
+                                <span class="px-3 py-1 rounded-full text-[11px] font-extrabold ${badgeColor}">
+                                    ${stage.subject || stage.category.toUpperCase()}
+                                </span>
+                                ${isCustom ? '<span class="text-[10px] bg-amber-100 text-amber-700 font-bold px-2 py-0.5 rounded-full">ด่านชุมชน</span>' : ''}
+                            </div>
+                            <h3 class="font-black text-slate-800 text-lg mb-1 leading-snug">${stage.title}</h3>
+                            <p class="text-slate-500 text-xs line-clamp-2 mb-4">${stage.question}</p>
+                        </div>
+                        <button onclick="openPlayModal('${stage.id}')" class="duo-btn w-full py-2.5 bg-duoGreen border-b-4 border-duoGreenDark text-white font-extrabold rounded-2xl text-xs flex items-center justify-center gap-2 hover:brightness-105">
+                            <span>เริ่มลุยด่าน</span>
+                            <i class="fa-solid fa-play text-[10px]"></i>
+                        </button>
+                    </div>
+                `;
+                container.innerHTML += cardHtml;
+            });
+        }
+
+        let activePlayingStage = null;
+        let selectedChoiceIdx = null;
+
+        function openPlayModal(stageId) {
+            const allStages = [...builtInStages, ...window.appState.customStages];
+            activePlayingStage = allStages.find(s => s.id === stageId);
+            if (!activePlayingStage) return;
+
+            selectedChoiceIdx = null;
+            document.getElementById('play-modal-tag').innerText = activePlayingStage.subject || 'แบบฝึกหัด';
+            document.getElementById('play-modal-title').innerText = activePlayingStage.title;
+            document.getElementById('play-modal-question').innerText = activePlayingStage.question;
+
+            // Render choices
+            const choicesContainer = document.getElementById('play-modal-choices');
+            choicesContainer.innerHTML = '';
+            activePlayingStage.choices.forEach((choice, idx) => {
+                choicesContainer.innerHTML += `
+                    <button id="choice-btn-${idx}" onclick="selectPlayChoice(${idx})" class="w-full text-left p-4 border-2 border-slate-200 rounded-2xl font-bold text-sm text-slate-700 hover:bg-slate-50 transition flex items-center gap-3">
+                        <span class="w-7 h-7 rounded-xl border-2 border-slate-200 flex items-center justify-center text-xs font-black text-slate-400">${idx + 1}</span>
+                        <span class="flex-1">${choice}</span>
+                    </button>
+                `;
+            });
+
+            // Reset Feedback UI
+            const feedbackBox = document.getElementById('play-feedback-box');
+            feedbackBox.classList.add('hidden');
+            
+            const actionBtn = document.getElementById('play-action-btn');
+            actionBtn.innerText = 'ส่งคำตอบ ✨';
+            actionBtn.setAttribute('onclick', 'checkSelectedAnswer()');
+
+            document.getElementById('play-modal').classList.remove('hidden');
+        }
+
+        function selectPlayChoice(idx) {
+            selectedChoiceIdx = idx;
+            document.querySelectorAll('#play-modal-choices button').forEach((btn, i) => {
+                if (i === idx) {
+                    btn.className = "w-full text-left p-4 border-2 border-duoBlue bg-blue-50/50 rounded-2xl font-bold text-sm text-duoBlue flex items-center gap-3";
+                } else {
+                    btn.className = "w-full text-left p-4 border-2 border-slate-200 rounded-2xl font-bold text-sm text-slate-700 hover:bg-slate-50 transition flex items-center gap-3";
+                }
+            });
+        }
+
+        function checkSelectedAnswer() {
+            if (selectedChoiceIdx === null) {
+                showToast("กรุณาเลือกคำตอบก่อนส่ง", "⚠️");
+                return;
+            }
+
+            const isCorrect = selectedChoiceIdx === activePlayingStage.correctAnswer;
+            const feedbackBox = document.getElementById('play-feedback-box');
+            const feedbackIcon = document.getElementById('feedback-icon');
+            const feedbackText = document.getElementById('feedback-text');
+
+            feedbackBox.classList.remove('hidden', 'bg-red-100', 'text-red-700', 'bg-green-100', 'text-green-800');
+
+            if (isCorrect) {
+                window.playTone('success');
+                feedbackBox.classList.add('bg-green-100', 'text-green-800');
+                feedbackIcon.innerText = '🎉';
+                feedbackText.innerHTML = `<div>ถูกต้องแล้ว! (+10 XP)</div><div class="text-xs font-medium mt-0.5">${activePlayingStage.explanation || ''}</div>`;
+                window.addXPToUser(10);
+            } else {
+                window.playTone('wrong');
+                feedbackBox.classList.add('bg-red-100', 'text-red-700');
+                feedbackIcon.innerText = '😅';
+                const correctText = activePlayingStage.choices[activePlayingStage.correctAnswer];
+                feedbackText.innerHTML = `<div>ยังไม่ถูกต้อง คำตอบคือ: ${correctText}</div><div class="text-xs font-medium mt-0.5">${activePlayingStage.explanation || ''}</div>`;
+            }
+
+            const actionBtn = document.getElementById('play-action-btn');
+            actionBtn.innerText = 'ลุยด่านถัดไป / ปิด';
+            actionBtn.setAttribute('onclick', 'closePlayModal()');
+        }
+
+        function closePlayModal() {
+            document.getElementById('play-modal').classList.add('hidden');
+        }
+
+        function startDiscoveryQuiz() {
+            currentQuizIndex = 0;
+            riasecScores = { R: 0, I: 0, A: 0, S: 0, E: 0, C: 0 };
+            document.getElementById('quiz-intro').classList.add('hidden');
+            document.getElementById('quiz-result-view').classList.add('hidden');
+            document.getElementById('quiz-question-box').classList.remove('hidden');
+            renderDiscoveryQuestion();
+        }
+
+        function cancelDiscoveryQuiz() {
+            document.getElementById('quiz-question-box').classList.add('hidden');
+            document.getElementById('quiz-intro').classList.remove('hidden');
+        }
+
+        function renderDiscoveryQuestion() {
+            const qData = discoveryQuestions[currentQuizIndex];
+            const total = discoveryQuestions.length;
+
+            // Update Progress Bar
+            const pct = Math.round(((currentQuizIndex + 1) / total) * 100);
+            document.getElementById('quiz-progress-bar').style.width = `${pct}%`;
+            document.getElementById('quiz-step-indicator').innerText = `${currentQuizIndex + 1}/${total}`;
+
+            // Content
+            document.getElementById('question-category-tag').innerText = qData.categoryTag;
+            document.getElementById('question-text').innerText = qData.question;
+
+            const choicesContainer = document.getElementById('quiz-options-container');
+            choicesContainer.innerHTML = '';
+
+            qData.choices.forEach((choice, idx) => {
+                choicesContainer.innerHTML += `
+                    <button onclick="answerDiscoveryQuestion('${choice.riasec}')" class="duo-card w-full text-left p-4 border-2 border-slate-200 bg-white hover:border-duoBlue hover:bg-blue-50/30 rounded-2xl font-bold text-sm text-slate-700 transition flex items-center justify-between group">
+                        <span>${choice.text}</span>
+                        <i class="fa-solid fa-chevron-right text-slate-300 group-hover:text-duoBlue text-xs"></i>
+                    </button>
+                `;
+            });
+        }
+
+        function answerDiscoveryQuestion(riasecTrait) {
+            window.playTone('success');
+            riasecScores[riasecTrait] = (riasecScores[riasecTrait] || 0) + 1;
+            
+            currentQuizIndex++;
+            if (currentQuizIndex < discoveryQuestions.length) {
+                renderDiscoveryQuestion();
+            } else {
+                finishDiscoveryQuiz();
+            }
+        }
+
+        function finishDiscoveryQuiz() {
+            document.getElementById('quiz-question-box').classList.add('hidden');
+            document.getElementById('quiz-result-view').classList.remove('hidden');
+
+            // Sort Top 3 RIASEC
+            const sortedTraits = Object.keys(riasecScores).sort((a, b) => riasecScores[b] - riasecScores[a]);
+            const top3Code = `${sortedTraits[0]} - ${sortedTraits[1]} - ${sortedTraits[2]}`;
+            
+            document.getElementById('result-riasec-code').innerText = top3Code;
+
+            // Generate Top Faculty Recommendations
+            const facultiesContainer = document.getElementById('faculties-recommend-container');
+            facultiesContainer.innerHTML = '';
+
+            const top1Info = riasecFacultyMap[sortedTraits[0]];
+            const top2Info = riasecFacultyMap[sortedTraits[1]];
+            const top3Info = riasecFacultyMap[sortedTraits[2]];
+
+            const topFacultiesList = [
+                { traitName: top1Info.name, faculty: top1Info.faculties[0], isTop1: true },
+                { traitName: top2Info.name, faculty: top2Info.faculties[0], isTop1: false },
+                { traitName: top3Info.name, faculty: top3Info.faculties[0], isTop1: false }
+            ];
+
+            topFacultiesList.forEach((item, idx) => {
+                facultiesContainer.innerHTML += `
+                    <div class="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-xl bg-duoGreen text-white font-black flex items-center justify-center text-sm flex-shrink-0 mt-0.5">
+                            ${idx + 1}
+                        </div>
+                        <div>
+                            <h4 class="font-extrabold text-slate-800 text-base">${item.faculty.name}</h4>
+                            <p class="text-xs text-slate-500 mt-0.5">${item.faculty.desc}</p>
+                            <span class="inline-block text-[10px] font-bold text-duoBlue bg-blue-50 px-2 py-0.5 rounded-md mt-2">อ้างอิงจากรหัส ${item.traitName}</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            // Render TCAS Weights Guidance
+            const tcasContainer = document.getElementById('tcas-weight-container');
+            tcasContainer.innerHTML = '';
+            top1Info.tcasWeights.forEach(tw => {
+                tcasContainer.innerHTML += `
+                    <div class="bg-purple-50/60 border border-purple-200 rounded-2xl p-3 text-center">
+                        <div class="text-xs font-bold text-slate-600">${tw.name}</div>
+                        <div class="text-lg font-black text-duoPurple mt-1">${tw.weight}</div>
+                    </div>
+                `;
+            });
+
+            // Top Universities & Salary
+            const uniList = document.getElementById('top-unis-list');
+            uniList.innerHTML = '';
+            const allUnisCombined = [...new Set([...top1Info.unis, ...top2Info.unis])];
+            allUnisCombined.forEach(u => {
+                uniList.innerHTML += `<li>${u}</li>`;
+            });
+
+            document.getElementById('salary-estimate-text').innerText = top1Info.salary;
+
+            // Save state object in memory for Firestore
+            window.appState.savedQuizResult = {
+                code: top3Code,
+                topFaculty: top1Info.faculties[0].name,
+                topTraitName: top1Info.name,
+                salary: top1Info.salary,
+                date: new Date().toLocaleDateString('th-TH')
+            };
+
+            window.playTone('fanfare');
+        }
+
+        function updateUIXP() {
+            const xp = window.appState.userXP;
+            document.getElementById('sidebar-xp').innerText = `${xp} XP`;
+            document.getElementById('mobile-xp').innerText = `${xp} XP`;
+            document.getElementById('profile-xp-total').innerText = xp;
+
+            // Rank calculation
+            let rank = 'High Schooler';
+            if (xp >= 300) rank = 'Platinum Scholar 🏆';
+            else if (xp >= 150) rank = 'Gold Student 🌟';
+            else if (xp >= 50) rank = 'Silver Learner 🥈';
+            document.getElementById('profile-rank-level').innerText = rank;
+        }
+
+        function renderProfileQuizInfo() {
+            const infoBox = document.getElementById('profile-quiz-saved-info');
+            const quiz = window.appState.savedQuizResult;
+            if (!quiz) return;
+
+            infoBox.innerHTML = `
+                <div class="space-y-1">
+                    <div class="flex items-center justify-between">
+                        <span class="font-extrabold text-sm text-slate-800">Holland Code: <span class="text-duoBlue">${quiz.code}</span></span>
+                        <span class="text-[10px] text-slate-400">${quiz.date || ''}</span>
+                    </div>
+                    <div class="text-xs font-bold text-duoGreen">${quiz.topFaculty}</div>
+                    <div class="text-[11px] text-slate-500">ประมาณการเงินเดือนเริ่มต้น: ${quiz.salary}</div>
+                </div>
+            `;
+        }
+
+        function toggleAuthSubTab(type) {
+            const btnSignin = document.getElementById('tab-btn-signin');
+            const btnSignup = document.getElementById('tab-btn-signup');
+            const submitBtn = document.getElementById('auth-submit-btn');
+
+            if (type === 'signin') {
+                btnSignin.className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-800 shadow-sm";
+                btnSignup.className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500";
+                submitBtn.innerText = "เข้าสู่ระบบ";
+            } else {
+                btnSignup.className = "flex-1 py-2 text-xs font-bold rounded-xl bg-white text-slate-800 shadow-sm";
+                btnSignin.className = "flex-1 py-2 text-xs font-bold rounded-xl text-slate-500";
+                submitBtn.innerText = "สร้างบัญชีใหม่";
+            }
+        }
+
+        function showToast(msg, icon = '✨') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            document.getElementById('toast-icon').innerText = icon;
+            toast.classList.remove('opacity-0', 'translate-y-20', 'pointer-events-none');
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-20', 'pointer-events-none');
+            }, 3000);
+        }
+
+        // Initialize App on DOM Load
+        window.onload = function() {
+            renderStages();
+        };
+    </script>
+</body>
+</html>
